@@ -1,15 +1,37 @@
-version: '3.1'
+version: '3.8'
 services:
   stats-server:
+    build: ./stats-service
+    image: stats
+    container_name: ewm_stats
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats-db?encoding=utf8
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SERVER_PORT=9090
 
   stats-db:
-    image: postgres:14-alpine
-
-  ewm-service:
+    image: postgres:15.1-alpine
+    container_name: ewm-stats-postgres
     ports:
-      - "8080:8080"
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=stats-db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - /var/lib/postgresql/data/
+      - ./stats-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/init.sql
 
-  ewm-db:
-    image: postgres:14-alpine
+
+#  ewm-service:
+#    ports:
+#      - "8080:8080"
+#
+#  ewm-db:
+#    image: postgres:14-alpine
