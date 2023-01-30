@@ -45,7 +45,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
         return viewStats;
     }
 
-    public static LocalDateTime convertStart(String start) {
+    private LocalDateTime convertStart(String start) {
         if (start == null) {
             return LocalDateTime.now().minusYears(10);
         } else {
@@ -53,7 +53,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
         }
     }
 
-    public static LocalDateTime convertEnd(String end) {
+    private LocalDateTime convertEnd(String end) {
         if (end == null) {
             return LocalDateTime.now();
         } else {
