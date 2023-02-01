@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS hits
     app  VARCHAR(300)                             NOT NULL,
     uri  VARCHAR(300)                             NOT NULL,
     ip   VARCHAR(300)                             NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
+    created_on TIMESTAMP                          NOT NULL,
     PRIMARY KEY (id)
     );

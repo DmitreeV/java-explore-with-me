@@ -3,6 +3,7 @@ package ru.practicum.ewm_stats.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_stats.dto.EndpointHitDto;
+import ru.practicum.ewm_stats.dto.GetStatsDto;
 import ru.practicum.ewm_stats.dto.ViewStatsDto;
 import ru.practicum.ewm_stats.service.EndpointHitService;
 
@@ -25,6 +26,6 @@ public class StatsController {
                                            @RequestParam String end,
                                            @RequestParam(required = false) List<String> uris,
                                            @RequestParam(defaultValue = "false") Boolean unique) {
-        return endpointHitService.getViewStats(start, end, uris, unique);
+        return endpointHitService.getViewStats(new GetStatsDto(start, end, uris, unique));
     }
 }

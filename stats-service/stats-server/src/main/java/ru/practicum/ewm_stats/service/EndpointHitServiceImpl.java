@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm_stats.dto.EndpointHitDto;
+import ru.practicum.ewm_stats.dto.GetStatsDto;
 import ru.practicum.ewm_stats.dto.ViewStatsDto;
 import ru.practicum.ewm_stats.model.EndpointHit;
 import ru.practicum.ewm_stats.repository.EndpointHitRepository;
@@ -30,34 +31,23 @@ public class EndpointHitServiceImpl implements EndpointHitService {
     }
 
     @Override
-    public List<ViewStatsDto> getViewStats(String start, String end, List<String> uris, Boolean unique) {
+    public List<ViewStatsDto> getViewStats(GetStatsDto getStatsDto) {
 
-        LocalDateTime startDate = convertStart(start);
-        LocalDateTime endDate = convertEnd(end);
+        LocalDateTime startDate = LocalDateTime.parse(getStatsDto.getStart(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime endDate = LocalDateTime.parse(getStatsDto.getEnd(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         List<ViewStatsDto> viewStats;
-        if (uris.isEmpty()) {
-            viewStats = (unique ? endpointHitRepository.getStatsUniqueByTime(startDate, endDate)
+        List<String> uris = getStatsDto.getUris();
+
+        if (getStatsDto.getUris().isEmpty()) {
+            viewStats = (getStatsDto.getUnique() ? endpointHitRepository.getStatsUniqueByTime(startDate, endDate)
                     : endpointHitRepository.getAllStatsByTime(startDate, endDate));
         } else {
-            viewStats = (unique ? endpointHitRepository.getStatsUniqueByTimeAndUris(startDate, endDate, uris)
+            viewStats = (getStatsDto.getUnique() ? endpointHitRepository.getStatsUniqueByTimeAndUris(startDate, endDate, uris)
                     : endpointHitRepository.getStatsByTimeAndUris(startDate, endDate, uris));
         }
         return viewStats;
-    }
-
-    private LocalDateTime convertStart(String start) {
-        if (start == null) {
-            return LocalDateTime.now().minusYears(10);
-        } else {
-            return LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        }
-    }
-
-    private LocalDateTime convertEnd(String end) {
-        if (end == null) {
-            return LocalDateTime.now();
-        } else {
-            return LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        }
     }
 }
