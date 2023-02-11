@@ -2,8 +2,6 @@ package ru.practicum.ewm_main.category.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @Builder
@@ -12,6 +10,6 @@ import javax.validation.constraints.NotNull;
 public class CategoryDto {
 
     private Long id;
-    @NotNull
+
     private String name;
 }

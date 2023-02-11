@@ -4,5 +4,6 @@ public enum StatusRequest {
 
     PENDING,
     CONFIRMED,
-    REJECTED
+    REJECTED,
+    CANCELED
 }

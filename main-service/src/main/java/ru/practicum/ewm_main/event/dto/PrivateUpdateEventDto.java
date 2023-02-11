@@ -8,7 +8,9 @@ import ru.practicum.ewm_main.location.dto.LocationDto;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminUpdateEventDto {
+public class PrivateUpdateEventDto {
+
+    private Long id;
 
     private String annotation;
 

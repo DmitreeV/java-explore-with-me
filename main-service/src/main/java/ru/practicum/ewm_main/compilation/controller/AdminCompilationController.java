@@ -3,8 +3,9 @@ package ru.practicum.ewm_main.compilation.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm_main.compilation.dto.CompilationCreateDto;
 import ru.practicum.ewm_main.compilation.dto.CompilationDto;
-import ru.practicum.ewm_main.compilation.dto.NewCompilationDto;
+import ru.practicum.ewm_main.compilation.dto.CompilationUpdateDto;
 import ru.practicum.ewm_main.compilation.service.CompilationService;
 
 import javax.validation.Valid;
@@ -18,8 +19,8 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CompilationDto saveCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
-        return compilationService.saveCompilation(newCompilationDto);
+    public CompilationDto saveCompilation(@Valid @RequestBody CompilationCreateDto compilationCreateDto) {
+        return compilationService.saveCompilation(compilationCreateDto);
     }
 
     @DeleteMapping("/{compId}")
@@ -29,7 +30,7 @@ public class AdminCompilationController {
     }
 
     @PatchMapping("/{compId}")
-    public CompilationDto updateCategory(@RequestBody CompilationDto compilationDto, @PathVariable Long compId) {
-        return compilationService.updateCompilation(compilationDto, compId);
+    public CompilationDto updateCategory(@PathVariable Long compId, @RequestBody CompilationUpdateDto compilationUpdateDto) {
+        return compilationService.updateCompilation(compId, compilationUpdateDto);
     }
 }

@@ -1,10 +1,11 @@
-package ru.practicum.ewm_main.participationRequest;
+package ru.practicum.ewm_main.participationRequest.mapper;
 
 import ru.practicum.ewm_main.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.ewm_main.participationRequest.model.ParticipationRequest;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ParticipationRequestMapper {
 
@@ -13,18 +14,16 @@ public class ParticipationRequestMapper {
     public static ParticipationRequestDto toParticipationRequestDto(ParticipationRequest request) {
         return ParticipationRequestDto.builder()
                 .id(request.getId())
-                .created(request.getCreated().format(DATE_TIME_FORMATTER))
-                .event(request.getEvent().getId())
                 .requester(request.getRequester().getId())
+                .event(request.getEvent().getId())
                 .status(request.getStatus())
+                .created(request.getCreated().format(DATE_TIME_FORMATTER))
                 .build();
     }
 
-    public static ParticipationRequest toParticipationRequest(ParticipationRequestDto requestDto) {
-        return ParticipationRequest.builder()
-                .id(requestDto.getId())
-                .created(LocalDateTime.parse(requestDto.getCreated(), DATE_TIME_FORMATTER))
-                .status(requestDto.getStatus())
-                .build();
+    public static List<ParticipationRequestDto> toParticipationRequestsDto(List<ParticipationRequest> requests) {
+        return requests.stream()
+                .map(ParticipationRequestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 }

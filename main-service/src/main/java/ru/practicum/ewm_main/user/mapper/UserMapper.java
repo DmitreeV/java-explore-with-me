@@ -1,4 +1,4 @@
-package ru.practicum.ewm_main.user;
+package ru.practicum.ewm_main.user.mapper;
 
 import ru.practicum.ewm_main.user.dto.UserDto;
 import ru.practicum.ewm_main.user.dto.UserShortDto;

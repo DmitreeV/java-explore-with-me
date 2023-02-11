@@ -59,4 +59,11 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     private State state;
+
+    @Builder.Default
+    @Column(name = "confirmed_requests")
+    private Integer confirmedRequests = 0;
+
+    @Builder.Default
+    private Long views = 0L;
 }

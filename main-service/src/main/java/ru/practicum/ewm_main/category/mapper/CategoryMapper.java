@@ -1,4 +1,4 @@
-package ru.practicum.ewm_main.category;
+package ru.practicum.ewm_main.category.mapper;
 
 import org.springframework.data.domain.Page;
 import ru.practicum.ewm_main.category.dto.CategoryDto;

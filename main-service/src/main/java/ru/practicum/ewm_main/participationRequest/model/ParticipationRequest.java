@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "participation_requests")
+@Table(name = "requests")
 public class ParticipationRequest {
 
     @Id
@@ -22,10 +22,10 @@ public class ParticipationRequest {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-
     private Event event;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "requester_id")
     private User requester;
 
     @Column(name = "created")

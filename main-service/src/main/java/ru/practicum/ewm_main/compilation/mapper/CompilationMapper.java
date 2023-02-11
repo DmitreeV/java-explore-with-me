@@ -1,7 +1,8 @@
-package ru.practicum.ewm_main.compilation;
+package ru.practicum.ewm_main.compilation.mapper;
 
+import org.springframework.data.domain.Page;
+import ru.practicum.ewm_main.compilation.dto.CompilationCreateDto;
 import ru.practicum.ewm_main.compilation.dto.CompilationDto;
-import ru.practicum.ewm_main.compilation.dto.NewCompilationDto;
 import ru.practicum.ewm_main.compilation.model.Compilation;
 
 import java.util.List;
@@ -18,23 +19,14 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static Compilation toCompilation(CompilationDto compilationDto) {
+    public static Compilation toCompilation(CompilationCreateDto compilationCreateDto) {
         return Compilation.builder()
-                .id(compilationDto.getId())
-                .title(compilationDto.getTitle())
-                .pinned(compilationDto.getPinned())
-                .events(compilationDto.getEvents())
+                .title(compilationCreateDto.getTitle())
+                .pinned(compilationCreateDto.getPinned())
                 .build();
     }
 
-    public static Compilation toCompilation(NewCompilationDto newCompilationDto) {
-        return Compilation.builder()
-                .title(newCompilationDto.getTitle())
-                .pinned(newCompilationDto.getPinned())
-                .build();
-    }
-
-    public static List<CompilationDto> toCompilationsDto(List<Compilation> compilations) {
+    public static List<CompilationDto> toCompilationsDto(Page<Compilation> compilations) {
         return compilations.stream()
                 .map(CompilationMapper::toCompilationDto)
                 .collect(Collectors.toList());
