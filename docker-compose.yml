@@ -38,7 +38,7 @@ services:
       - ewm-db
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - STATS_CLIENT_URL=http://stats-server:9090
+      - STAT_URL=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/main-service?encoding=utf8
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
