@@ -1,7 +1,6 @@
 package ru.practicum.ewm_main.participationRequest.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import ru.practicum.ewm_main.participationRequest.model.ParticipationRequest;
 import ru.practicum.ewm_main.participationRequest.model.StatusRequest;
 
@@ -20,9 +19,5 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
 
     Integer countParticipationByEventIdAndStatus(Long eventId, StatusRequest confirmed);
 
-    @Query("SELECT r FROM ParticipationRequest AS r " +
-            "WHERE r.event.id = :eventId " +
-            "AND r.event.initiator.id = :initiatorId " +
-            "AND r.id in (:requestsId)")
-    List<ParticipationRequest> findRequestsByInitiatorIdIdAndEventId(Long initiatorId, Long eventId, List<Long> requestsId);
+    Optional<ParticipationRequest> findByIdAndEvent_Id(Long id, Long eventId);
 }

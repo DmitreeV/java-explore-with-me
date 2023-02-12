@@ -12,7 +12,6 @@ import ru.practicum.ewm_main.event.model.Event;
 import ru.practicum.ewm_main.event.model.State;
 import ru.practicum.ewm_main.event.repository.EventRepository;
 import ru.practicum.ewm_main.participationRequest.dto.ParticipationRequestDto;
-import ru.practicum.ewm_main.participationRequest.mapper.ParticipationRequestMapper;
 import ru.practicum.ewm_main.participationRequest.model.ParticipationRequest;
 import ru.practicum.ewm_main.participationRequest.model.StatusRequest;
 import ru.practicum.ewm_main.participationRequest.repository.ParticipationRequestRepository;
@@ -22,6 +21,7 @@ import ru.practicum.ewm_main.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.practicum.ewm_main.participationRequest.mapper.ParticipationRequestMapper.toParticipationRequestDto;
 import static ru.practicum.ewm_main.participationRequest.mapper.ParticipationRequestMapper.toParticipationRequestsDto;
@@ -41,24 +41,30 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         if (requestRepository.findByEventIdAndRequesterId(eventId, userId) != null) {
             throw new ConflictException("Нельзя добавить повторный запрос.");
         }
-        ParticipationRequest request = new ParticipationRequest();
-        request.setCreated(LocalDateTime.now());
-        request.setRequester(getUser(userId));
-        request.setEvent(getEvent(eventId));
-        request.setStatus(CONFIRMED);
+        User user = getUser(userId);
+        Event event = getEvent(eventId);
 
-        if (userId.equals(request.getEvent().getInitiator().getId())) {
+        if (Objects.equals(userId, event.getInitiator().getId())) {
             throw new ConflictException("Нельзя добавить запрос от инициализатора события.");
         }
-        if (!request.getEvent().getState().equals(State.PUBLISHED)) {
+        if (!event.getState().equals(State.PUBLISHED)) {
             throw new ConflictException("Нельзя добавить запрос на не опубликованное событие.");
         }
-        if (request.getEvent().getParticipantLimit() <= requestRepository
+        if (event.getParticipantLimit() <= requestRepository
                 .countParticipationByEventIdAndStatus(eventId, CONFIRMED)) {
             throw new ConflictException("Лимит участников уже заполнен.");
         }
-        if (Boolean.TRUE.equals(request.getEvent().getRequestModeration())) {
+
+        ParticipationRequest request = new ParticipationRequest();
+        request.setCreated(LocalDateTime.now());
+        request.setRequester(user);
+        request.setEvent(event);
+
+        if (Boolean.TRUE.equals(event.getRequestModeration())) {
             request.setStatus(StatusRequest.PENDING);
+        } else {
+            request.setStatus(StatusRequest.CONFIRMED);
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         }
         log.info("Запрос на участие сохранен.");
         return toParticipationRequestDto(requestRepository.save(request));
@@ -80,40 +86,37 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public RequestStatusUpdateResponse updateParticipationRequest(Long userId, Long eventId, EventReqStatusUpdateReqDto updateReqDto) {
+        getUser(userId);
         Event event = getEvent(eventId);
 
-        if (event.getParticipantLimit() <= requestRepository
-                .countParticipationByEventIdAndStatus(eventId, CONFIRMED)) {
-            throw new ConflictException("Лимит участников уже заполнен.");
-        }
+        List<Long> ids = updateReqDto.getRequestIds();
+        StatusRequest state = updateReqDto.getStatus();
+
         List<ParticipationRequestDto> confirmedList = new ArrayList<>();
         List<ParticipationRequestDto> rejectedList = new ArrayList<>();
 
-        requestRepository.findRequestsByInitiatorIdIdAndEventId(userId, eventId, updateReqDto.getRequestIds())
-                .stream()
-                .peek(req -> {
-                    if (req.getStatus().equals(StatusRequest.PENDING)) {
-                        if (updateReqDto.getStatus().equals(StatusRequest.CONFIRMED)) {
-                            if (event.getConfirmedRequests() < event.getParticipantLimit()) {
-                                req.setStatus(StatusRequest.CONFIRMED);
-                                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-                            } else {
-                                req.setStatus(StatusRequest.REJECTED);
-                            }
-                        } else {
-                            req.setStatus(StatusRequest.REJECTED);
-                        }
-                    } else {
-                        throw new ConflictException("Нельзя подтвердить запрос.");
-                    }
-                })
-                .map(ParticipationRequestMapper::toParticipationRequestDto)
-                .forEach(req -> {
-                    if (req.getStatus().equals(StatusRequest.CONFIRMED))
-                        confirmedList.add(req);
-                    else
-                        rejectedList.add(req);
-                });
+        for (Long id : ids) {
+            if (event.getParticipantLimit() == 0) {
+                throw new ConflictException("Лимит участников уже заполнен.");
+            }
+
+            ParticipationRequest request = requestRepository.findByIdAndEvent_Id(id, eventId).orElseThrow(() ->
+                    new NotFoundException("Запрос не найден."));
+
+            if (!request.getStatus().equals(StatusRequest.PENDING)) {
+                throw new ConflictException("Нельзя подтвердить запрос.");
+            }
+            if (state.equals(StatusRequest.CONFIRMED)) {
+                request.setStatus(StatusRequest.CONFIRMED);
+                confirmedList.add(toParticipationRequestDto(requestRepository.save(request)));
+                event.setParticipantLimit(event.getParticipantLimit() - 1);
+            } else {
+                request.setStatus(StatusRequest.REJECTED);
+                rejectedList.add(toParticipationRequestDto(requestRepository.save(request)));
+            }
+        }
+        eventRepository.save(event);
+
         log.info("Статус заявки изменен.");
         return new RequestStatusUpdateResponse(confirmedList, rejectedList);
     }
