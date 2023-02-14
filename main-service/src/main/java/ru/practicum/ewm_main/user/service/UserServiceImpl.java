@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_main.error.exception.ConflictException;
 import ru.practicum.ewm_main.user.dto.UserDto;
 import ru.practicum.ewm_main.user.model.User;
@@ -18,6 +19,7 @@ import static ru.practicum.ewm_main.user.mapper.UserMapper.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getAllUsers(List<Long> userIds, int from, int size) {
         if (userIds.isEmpty()) {
             return new ArrayList<>();

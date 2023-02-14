@@ -11,7 +11,8 @@ import ru.practicum.ewm_stats.dto.EndpointHitDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static ru.practicum.ewm_main.Constant.DATE_TIME_FORMATTER;
 
 @Service
 public class EventClient extends BaseClient {
@@ -33,7 +34,7 @@ public class EventClient extends BaseClient {
                 .ip(ip)
                 .uri(uri)
                 .app("ewm-main-service")
-                .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(LocalDateTime.now().format(DATE_TIME_FORMATTER))
                 .build());
     }
 }

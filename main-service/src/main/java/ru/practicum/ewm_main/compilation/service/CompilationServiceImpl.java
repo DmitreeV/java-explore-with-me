@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_main.compilation.dto.CompilationCreateDto;
 import ru.practicum.ewm_main.compilation.dto.CompilationDto;
 import ru.practicum.ewm_main.compilation.dto.CompilationUpdateDto;
@@ -21,6 +22,7 @@ import static ru.practicum.ewm_main.compilation.mapper.CompilationMapper.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationRepository compilationRepository;
@@ -54,6 +56,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CompilationDto> getAllCompilations(Boolean pinned, Integer from, Integer size) {
         if (pinned == null) {
             return toCompilationsDto(compilationRepository.findAll(PageRequest.of(from / size, size)));
@@ -63,6 +66,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CompilationDto getCompilationById(Long compId) {
         return toCompilationDto(getCompilation(compId));
     }

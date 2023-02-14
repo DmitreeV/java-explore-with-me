@@ -6,6 +6,8 @@ import ru.practicum.ewm_main.event.dto.AdminUpdateEventDto;
 import ru.practicum.ewm_main.event.dto.EventFullDto;
 import ru.practicum.ewm_main.event.service.EventService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -21,8 +23,8 @@ public class AdminEventController {
                                                @RequestParam(required = false) List<Long> categories,
                                                @RequestParam(required = false) String rangeStart,
                                                @RequestParam(required = false) String rangeEnd,
-                                               @RequestParam(defaultValue = "0") int from,
-                                               @RequestParam(defaultValue = "10") int size) {
+                                               @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                               @Positive @RequestParam(defaultValue = "10") int size) {
         return eventService.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

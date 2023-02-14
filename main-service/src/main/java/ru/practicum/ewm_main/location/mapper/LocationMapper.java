@@ -1,4 +1,4 @@
-package ru.practicum.ewm_main.location;
+package ru.practicum.ewm_main.location.mapper;
 
 import ru.practicum.ewm_main.location.dto.LocationDto;
 import ru.practicum.ewm_main.location.model.Location;

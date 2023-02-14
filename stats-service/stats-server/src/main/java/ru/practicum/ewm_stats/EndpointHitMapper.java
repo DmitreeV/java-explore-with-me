@@ -1,12 +1,16 @@
 package ru.practicum.ewm_stats;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm_stats.dto.EndpointHitDto;
 import ru.practicum.ewm_stats.model.EndpointHit;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@UtilityClass
 public class EndpointHitMapper {
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static EndpointHit toEndpointHit(EndpointHitDto endpointHitDto) {
         return EndpointHit.builder()
@@ -15,7 +19,7 @@ public class EndpointHitMapper {
                 .ip(endpointHitDto.getIp())
                 .uri(endpointHitDto.getUri())
                 .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        DATE_TIME_FORMATTER))
                 .build();
     }
 
@@ -25,7 +29,7 @@ public class EndpointHitMapper {
                 .app(endpointHit.getApp())
                 .ip(endpointHit.getIp())
                 .uri(endpointHit.getUri())
-                .timestamp(endpointHit.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(endpointHit.getTimestamp().format(DATE_TIME_FORMATTER))
                 .build();
     }
 }

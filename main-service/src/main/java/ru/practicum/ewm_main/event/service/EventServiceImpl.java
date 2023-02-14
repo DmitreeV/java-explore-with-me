@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_main.category.model.Category;
 import ru.practicum.ewm_main.category.repository.CategoryRepository;
 import ru.practicum.ewm_main.error.exception.BadRequestException;
@@ -25,14 +26,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.ewm_main.Constant.DATE_TIME_FORMATTER;
 import static ru.practicum.ewm_main.event.mapper.EventMapper.*;
 import static ru.practicum.ewm_main.event.model.State.*;
-import static ru.practicum.ewm_main.location.LocationMapper.toLocation;
+import static ru.practicum.ewm_main.location.mapper.LocationMapper.toLocation;
 import static ru.practicum.ewm_main.participationRequest.model.StatusRequest.CONFIRMED;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class EventServiceImpl implements EventService {
 
     private final UserRepository userRepository;
@@ -42,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final ParticipationRequestRepository requestRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventShortDto> getUserEvents(Long userId, int from, int size) {
         return toEventsDto(eventRepository.findAllByInitiatorId(userId, PageRequest.of(from / size, size)));
     }
@@ -62,6 +66,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EventFullDto getEventByUserId(Long eventId, Long userId) {
         Event event = getEvent(eventId);
         if (!event.getInitiator().getId().equals(userId)) {
@@ -95,6 +100,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventShortDto> getEvents(String text, List<Long> categoryIds, Boolean paid, String rangeStart,
                                          String rangeEnd, Boolean onlyAvailable, String sort, int from, int size) {
 
@@ -139,6 +145,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EventFullDto getEventById(Long eventId) {
         Event event = getEvent(eventId);
         if (!event.getState().equals(PUBLISHED)) {
@@ -149,6 +156,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventFullDto> getEventsByAdmin(List<Long> users, List<String> states, List<Long> categories,
                                                String rangeStart, String rangeEnd, int from, int size) {
         List<State> stateList = states == null ? null : states

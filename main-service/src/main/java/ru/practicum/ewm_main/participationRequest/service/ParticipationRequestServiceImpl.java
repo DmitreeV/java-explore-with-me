@@ -3,6 +3,7 @@ package ru.practicum.ewm_main.participationRequest.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_main.error.exception.BadRequestException;
 import ru.practicum.ewm_main.error.exception.ConflictException;
 import ru.practicum.ewm_main.error.exception.NotFoundException;
@@ -30,6 +31,7 @@ import static ru.practicum.ewm_main.participationRequest.model.StatusRequest.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
     private final ParticipationRequestRepository requestRepository;
@@ -71,12 +73,14 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getParticipationRequests(Long userId) {
         log.info("Получена информация о заявках пользователя.");
         return toParticipationRequestsDto(requestRepository.findAllByRequesterId(userId));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getParticipationRequests(Long eventId, Long userId) {
         getUser(userId);
         getEvent(eventId);

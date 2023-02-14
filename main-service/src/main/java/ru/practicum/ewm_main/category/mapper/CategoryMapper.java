@@ -1,5 +1,6 @@
 package ru.practicum.ewm_main.category.mapper;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 import ru.practicum.ewm_main.category.dto.CategoryDto;
 import ru.practicum.ewm_main.category.dto.NewCategoryDto;
@@ -8,19 +9,13 @@ import ru.practicum.ewm_main.category.model.Category;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class CategoryMapper {
 
     public static CategoryDto toCategoryDto(Category category) {
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .build();
-    }
-
-    public static Category toCategory(CategoryDto categoryDto) {
-        return Category.builder()
-                .id(categoryDto.getId())
-                .name(categoryDto.getName())
                 .build();
     }
 

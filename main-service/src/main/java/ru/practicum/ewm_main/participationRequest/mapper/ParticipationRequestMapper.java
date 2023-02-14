@@ -1,15 +1,16 @@
 package ru.practicum.ewm_main.participationRequest.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm_main.participationRequest.dto.ParticipationRequestDto;
 import ru.practicum.ewm_main.participationRequest.model.ParticipationRequest;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ParticipationRequestMapper {
+import static ru.practicum.ewm_main.Constant.DATE_TIME_FORMATTER;
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+@UtilityClass
+public class ParticipationRequestMapper {
 
     public static ParticipationRequestDto toParticipationRequestDto(ParticipationRequest request) {
         return ParticipationRequestDto.builder()

@@ -6,15 +6,21 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class ApiError {
 
-    private final HttpStatus status;
+    private HttpStatus status;
 
     private final String reason;
 
     private final String message;
 
     private final LocalDateTime timestamp;
+
+    public ApiError(String reason, String message, LocalDateTime timestamp) {
+        this.reason = reason;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
 }

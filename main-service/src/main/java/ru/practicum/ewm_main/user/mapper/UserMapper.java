@@ -1,5 +1,6 @@
 package ru.practicum.ewm_main.user.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm_main.user.dto.UserDto;
 import ru.practicum.ewm_main.user.dto.UserShortDto;
 import ru.practicum.ewm_main.user.model.User;
@@ -7,6 +8,7 @@ import ru.practicum.ewm_main.user.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class UserMapper {
 
     public static UserDto toUserDto(User user) {

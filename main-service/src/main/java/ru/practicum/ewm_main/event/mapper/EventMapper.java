@@ -1,5 +1,6 @@
 package ru.practicum.ewm_main.event.mapper;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 import ru.practicum.ewm_main.event.dto.EventFullDto;
 import ru.practicum.ewm_main.event.dto.EventShortDto;
@@ -7,17 +8,17 @@ import ru.practicum.ewm_main.event.dto.NewEventDto;
 import ru.practicum.ewm_main.event.model.Event;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.ewm_main.Constant.DATE_TIME_FORMATTER;
 import static ru.practicum.ewm_main.category.mapper.CategoryMapper.toCategoryDto;
 import static ru.practicum.ewm_main.event.model.State.PENDING;
-import static ru.practicum.ewm_main.location.LocationMapper.toLocationDto;
+import static ru.practicum.ewm_main.location.mapper.LocationMapper.toLocationDto;
 import static ru.practicum.ewm_main.user.mapper.UserMapper.toUserShortDto;
 
+@UtilityClass
 public class EventMapper {
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static EventFullDto toEventDto(Event event) {
         return EventFullDto.builder()
