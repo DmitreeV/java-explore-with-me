@@ -2,7 +2,10 @@ package ru.practicum.ewm_main.event.dto;
 
 import lombok.*;
 import ru.practicum.ewm_main.category.dto.CategoryDto;
+import ru.practicum.ewm_main.comment.dto.CommentDto;
 import ru.practicum.ewm_main.user.dto.UserShortDto;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +31,6 @@ public class EventShortDto {
     private String title;
 
     private Long views;
+
+    private List<CommentDto> comments;
 }
