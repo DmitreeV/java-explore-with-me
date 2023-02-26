@@ -1,2 +1,68 @@
-# java-explore-with-me
-Template repository for ExploreWithMe project.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/github_username/repo_name">
+    <img src="https://x-lines.ru/letters/i/cyrillicscript/1533/000000/42/0/eih8y5dxqj11y75jqtwny5mf.png">
+
+  </a>
+
+  <p align="center">
+  </p>
+</div>
+
+</details>
+<details><summary><b>Содержание</b></summary>
+  
+    1. Краткое описание
+    2. Стек-технологий
+    3. Функциональности проекта
+    4. Схема базы данных
+    5. Системные требования
+    
+</details>
+
+## Краткое описание
+Explore With Me - это приложение дает возможность делиться информацией об интересных событиях и помогает найти компанию для участия в них. Реализовано в виде двух микросервисов с отдельными БД - один для сохранения и получения статистики, второй с основной бизнес логикой. Пользователи могут создавать и искать мероприятия, участвовать в них, оставлять комментарии и т.д.
+
+## Стек-технологий
+* Hibernate
+* Spring Boot
+* JPA+API
+* Postgres
+* Maven
+* Межсервисное взаимодействие
+* Docker
+
+## Функциональности проекта
+Программа представляет собой микросервис с архитектурой REST API, отвечающей требованиям [спецификаций](./ewm-main-service-spec.json) из [Swagger](https://editor-next.swagger.io/).
+
+Микросервис состоит из двух модулей:
+* модуль [main-service](./main-service) отвечает за базовую и дополнительную бизнес-логику, ядро приложения;
+* модуль [stats-service](./stats-service) призван решать вспомогательные задачи по сбору и выдачи статистики ресурса.
+
+API основного сервиса разделен на три части. Первая — публичная, доступна без регистрации любому пользователю сети. Вторая — закрытая, доступна только авторизованным пользователям. Третья — административная, для администраторов сервиса. 
+
+Добавлена новая функциональность - возможность комментировать события (отсутствует в спецификации).
+REST API фичи комментарии (включена в основной сервис):
+
+* POST /users/{userId}/comments/{eventId} создание комментария к событию.	 
+* PATCH /users/{userId}/comments/{commentId} обновление комментария .
+* DELETE /users/{userId}/comments/{commentId} удаление комментария пользователем.
+* GET /users/{userId}/comments?from={from}&size={size} получение списка комментариев пользователем.
+* GET /events/{eventId}/comments?from={from}&size={size} получение списка комментариев для события.
+* DELETE /admin/comments/{commentId} удаление комментария администратором.
+
+
+## Схема базы данных
+![ShareIt Data Base diagram](https://github.com/DmitreeV/java-explore-with-me/blob/feature_comments/image/db%20diagramm.jpg)
+
+## Системные требования
+
+В данном репозитории представлен бэкенд приложения. Программа протестирована по WEB API с помощью
+Postman-тестов, тесты для функциональности комментарии написаны мной [postman](./postman/).
+
+Приложение работает корректно в текущем виде при наличии:
+
+- установленный [JDK версии 11](https://docs.aws.amazon.com/corretto/),
+- сборка с использованием [Maven](https://maven.apache.org/),
+- установленный [Docker](https://www.docker.com/products/docker-desktop/).
